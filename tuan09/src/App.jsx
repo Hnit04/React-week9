@@ -3,11 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { increment, decrement } from './store/slices/counterSlice';
 import { addTodo, toggleTodo, removeTodo } from './store/slices/todoSlice';
 import { toggleTheme } from './store/slices/themeSlice';
+import { addItem, removeItem, updateQuantity } from './store/slices/cartSlice';
 
 function App() {
   const count = useSelector((state) => state.counter.count);
   const todos = useSelector((state) => state.todo.todos);
   const theme = useSelector((state) => state.theme.theme);
+  const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
   const [text, setText] = useState('');
 
@@ -21,6 +23,9 @@ function App() {
       setText('');
     }
   };
+
+  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="App">
@@ -49,6 +54,32 @@ function App() {
       <h1>Chuyển đổi giao diện</h1>
       <p>Giao diện hiện tại: {theme === 'light' ? 'Sáng' : 'Tối'}</p>
       <button onClick={() => dispatch(toggleTheme())}>Chuyển đổi giao diện</button>
+
+      <h1>Giỏ hàng</h1>
+      <button
+        onClick={() =>
+          dispatch(addItem({ id: Date.now(), name: 'Sản phẩm', price: 10 }))
+        }
+      >
+        Thêm sản phẩm
+      </button>
+      <ul>
+        {cartItems.map((item) => (
+          <li key={item.id}>
+            {item.name} - ${item.price} x {item.quantity}
+            <button onClick={() => dispatch(removeItem(item.id))}>Xóa</button>
+            <input
+              type="number"
+              value={item.quantity}
+              onChange={(e) =>
+                dispatch(updateQuantity({ id: item.id, quantity: +e.target.value }))
+              }
+            />
+          </li>
+        ))}
+      </ul>
+      <p>Tổng số lượng: {totalQuantity}</p>
+      <p>Tổng tiền: ${totalPrice}</p>
     </div>
   );
 }
