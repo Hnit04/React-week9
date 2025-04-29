@@ -7,6 +7,7 @@ import { addItem, removeItem, updateQuantity } from './store/slices/cartSlice';
 import { login, logout } from './store/slices/authSlice';
 import { fetchUsers } from './store/slices/userSlice';
 import { updateInput, calculateResult } from './store/slices/bmiSlice';
+import { addEvent, deleteEvent } from './store/slices/eventSlice';
 
 function App() {
   const count = useSelector((state) => state.counter.count);
@@ -16,9 +17,12 @@ function App() {
   const { user, isLoggedIn } = useSelector((state) => state.auth);
   const { users, status, error } = useSelector((state) => state.users);
   const { height, weight, result } = useSelector((state) => state.bmi);
+  const events = useSelector((state) => state.event.events);
   const dispatch = useDispatch();
   const [text, setText] = useState('');
   const [amount, setAmount] = useState(0);
+  const [eventTitle, setEventTitle] = useState('');
+  const [eventDate, setEventDate] = useState('');
 
   useEffect(() => {
     document.body.className = theme;
@@ -35,11 +39,19 @@ function App() {
     }
   };
 
+  const handleAddEvent = () => {
+    if (eventTitle && eventDate) {
+      dispatch(addEvent({ title: eventTitle, date: eventDate }));
+      setEventTitle('');
+      setEventDate('');
+    }
+  };
+
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleLogin = () => {
-    dispatch(login({ name: 'Trần Công Tính', email: 'trancongtinh20042004@gmail.com' }));
+    dispatch(login({ name: 'Nguyễn Văn A', email: 'a@example.com' }));
   };
 
   return (
@@ -47,7 +59,7 @@ function App() {
       <h1>Ứng dụng đếm số nâng cao</h1>
       <h2>Số đếm: {count}</h2>
       <button onClick={() => dispatch(increment())}>Tăng</button>
-      <button onClick={() => dispatch(decrement())}>Giảm</button>
+ Reagent: <button onClick={() => dispatch(decrement())}>Giảm</button>
       <button onClick={() => dispatch(reset())}>Đặt lại</button>
       <input
         type="number"
@@ -150,6 +162,29 @@ function App() {
       </div>
       <button onClick={() => dispatch(calculateResult())}>Tính</button>
       {result && <p>BMI: {result.toFixed(2)}</p>}
+
+      <h1>Quản lý sự kiện</h1>
+      <div>
+        <input
+          value={eventTitle}
+          onChange={(e) => setEventTitle(e.target.value)}
+          placeholder="Tên sự kiện"
+        />
+        <input
+          type="date"
+          value={eventDate}
+          onChange={(e) => setEventDate(e.target.value)}
+        />
+        <button onClick={handleAddEvent}>Thêm</button>
+      </div>
+      <ul>
+        {events.map((event) => (
+          <li key={event.id}>
+            {event.title} - {event.date}
+            <button onClick={() => dispatch(deleteEvent(event.id))}>Xóa</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
