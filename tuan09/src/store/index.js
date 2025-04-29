@@ -7,6 +7,7 @@ import authReducer from './slices/authSlice';
 import userReducer from './slices/userSlice';
 import bmiReducer from './slices/bmiSlice';
 import eventReducer from './slices/eventSlice';
+import productReducer from './slices/productSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     users: userReducer,
     bmi: bmiReducer,
     event: eventReducer,
+    product: productReducer,
   },
 });

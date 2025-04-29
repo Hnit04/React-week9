@@ -8,6 +8,7 @@ import { login, logout } from './store/slices/authSlice';
 import { fetchUsers } from './store/slices/userSlice';
 import { updateInput, calculateResult } from './store/slices/bmiSlice';
 import { addEvent, deleteEvent } from './store/slices/eventSlice';
+import { addProduct } from './store/slices/productSlice';
 
 function App() {
   const count = useSelector((state) => state.counter.count);
@@ -18,6 +19,7 @@ function App() {
   const { users, status, error } = useSelector((state) => state.users);
   const { height, weight, result } = useSelector((state) => state.bmi);
   const events = useSelector((state) => state.event.events);
+  const products = useSelector((state) => state.product.products);
   const dispatch = useDispatch();
   const [text, setText] = useState('');
   const [amount, setAmount] = useState(0);
@@ -51,7 +53,7 @@ function App() {
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleLogin = () => {
-    dispatch(login({ name: 'Nguyễn Văn A', email: 'a@example.com' }));
+    dispatch(login({ name: 'Trần Công Tính', email: 'trancongtinh20042004@gmail.com' }));
   };
 
   return (
@@ -59,7 +61,7 @@ function App() {
       <h1>Ứng dụng đếm số nâng cao</h1>
       <h2>Số đếm: {count}</h2>
       <button onClick={() => dispatch(increment())}>Tăng</button>
- Reagent: <button onClick={() => dispatch(decrement())}>Giảm</button>
+      <button onClick={() => dispatch(decrement())}>Giảm</button>
       <button onClick={() => dispatch(reset())}>Đặt lại</button>
       <input
         type="number"
@@ -183,6 +185,20 @@ function App() {
             {event.title} - {event.date}
             <button onClick={() => dispatch(deleteEvent(event.id))}>Xóa</button>
           </li>
+        ))}
+      </ul>
+
+      <h1>Quản lý sản phẩm</h1>
+      <button
+        onClick={() =>
+          dispatch(addProduct({ id: Date.now(), name: 'Sản phẩm mới', price: 20 }))
+        }
+      >
+        Thêm sản phẩm
+      </button>
+      <ul>
+        {products.map((product) => (
+          <li key={product.id}>{product.name} - ${product.price}</li>
         ))}
       </ul>
     </div>
