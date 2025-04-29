@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { increment, decrement } from './store/slices/counterSlice';
 import { addTodo, toggleTodo, removeTodo } from './store/slices/todoSlice';
+import { toggleTheme } from './store/slices/themeSlice';
 
 function App() {
   const count = useSelector((state) => state.counter.count);
   const todos = useSelector((state) => state.todo.todos);
+  const theme = useSelector((state) => state.theme.theme);
   const dispatch = useDispatch();
   const [text, setText] = useState('');
+
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
 
   const handleAdd = () => {
     if (text.trim()) {
@@ -39,6 +45,10 @@ function App() {
           </li>
         ))}
       </ul>
+
+      <h1>Chuyển đổi giao diện</h1>
+      <p>Giao diện hiện tại: {theme === 'light' ? 'Sáng' : 'Tối'}</p>
+      <button onClick={() => dispatch(toggleTheme())}>Chuyển đổi giao diện</button>
     </div>
   );
 }
