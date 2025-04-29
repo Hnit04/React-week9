@@ -5,6 +5,7 @@ import { addTodo, toggleTodo, removeTodo } from './store/slices/todoSlice';
 import { toggleTheme } from './store/slices/themeSlice';
 import { addItem, removeItem, updateQuantity } from './store/slices/cartSlice';
 import { login, logout } from './store/slices/authSlice';
+import { fetchUsers } from './store/slices/userSlice';
 
 function App() {
   const count = useSelector((state) => state.counter.count);
@@ -12,12 +13,17 @@ function App() {
   const theme = useSelector((state) => state.theme.theme);
   const cartItems = useSelector((state) => state.cart.cartItems);
   const { user, isLoggedIn } = useSelector((state) => state.auth);
+  const { users, status, error } = useSelector((state) => state.users);
   const dispatch = useDispatch();
   const [text, setText] = useState('');
 
   useEffect(() => {
     document.body.className = theme;
   }, [theme]);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   const handleAdd = () => {
     if (text.trim()) {
@@ -30,7 +36,7 @@ function App() {
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleLogin = () => {
-    dispatch(login({ name: 'Trần Công Tính', email: 'trancongtinh20042004@gmail.com' }));
+    dispatch(login({ name: 'Nguyễn Văn A', email: 'a@example.com' }));
   };
 
   return (
@@ -98,6 +104,15 @@ function App() {
           <button onClick={handleLogin}>Đăng nhập</button>
         </div>
       )}
+
+      <h1>Danh sách người dùng</h1>
+      {status === 'loading' && <p>Đang tải...</p>}
+      {status === 'failed' && <p>Lỗi: {error}</p>}
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>{user.name} - {user.email}</li>
+        ))}
+      </ul>
     </div>
   );
 }
