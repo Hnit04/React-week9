@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement } from './store/slices/counterSlice';
+import { increment, decrement, reset, incrementByAmount } from './store/slices/counterSlice';
 import { addTodo, toggleTodo, removeTodo } from './store/slices/todoSlice';
 import { toggleTheme } from './store/slices/themeSlice';
 import { addItem, removeItem, updateQuantity } from './store/slices/cartSlice';
@@ -16,6 +16,7 @@ function App() {
   const { users, status, error } = useSelector((state) => state.users);
   const dispatch = useDispatch();
   const [text, setText] = useState('');
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     document.body.className = theme;
@@ -36,15 +37,25 @@ function App() {
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleLogin = () => {
-    dispatch(login({ name: 'Nguyễn Văn A', email: 'a@example.com' }));
+    dispatch(login({ name: 'Trần Công TínhTính', email: 'trancongtinh20042004@gmail.com' }));
   };
 
   return (
     <div className="App">
-      <h1>Ứng dụng đếm số</h1>
+      <h1>Ứng dụng đếm số nâng cao</h1>
       <h2>Số đếm: {count}</h2>
       <button onClick={() => dispatch(increment())}>Tăng</button>
       <button onClick={() => dispatch(decrement())}>Giảm</button>
+      <button onClick={() => dispatch(reset())}>Đặt lại</button>
+      <input
+        type="number"
+        value={amount}
+        onChange={(e) => setAmount(+e.target.value)}
+        placeholder="Nhập số"
+      />
+      <button onClick={() => dispatch(incrementByAmount(amount))}>
+        Tăng theo số
+      </button>
 
       <h1>Danh sách công việc</h1>
       <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Thêm công việc" />
