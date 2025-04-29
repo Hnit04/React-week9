@@ -4,12 +4,14 @@ import { increment, decrement } from './store/slices/counterSlice';
 import { addTodo, toggleTodo, removeTodo } from './store/slices/todoSlice';
 import { toggleTheme } from './store/slices/themeSlice';
 import { addItem, removeItem, updateQuantity } from './store/slices/cartSlice';
+import { login, logout } from './store/slices/authSlice';
 
 function App() {
   const count = useSelector((state) => state.counter.count);
   const todos = useSelector((state) => state.todo.todos);
   const theme = useSelector((state) => state.theme.theme);
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [text, setText] = useState('');
 
@@ -26,6 +28,10 @@ function App() {
 
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleLogin = () => {
+    dispatch(login({ name: 'Trần Công Tính', email: 'trancongtinh20042004@gmail.com' }));
+  };
 
   return (
     <div className="App">
@@ -80,6 +86,18 @@ function App() {
       </ul>
       <p>Tổng số lượng: {totalQuantity}</p>
       <p>Tổng tiền: ${totalPrice}</p>
+
+      <h1>Quản lý đăng nhập</h1>
+      {isLoggedIn ? (
+        <div>
+          <p>Xin chào, {user?.name}!</p>
+          <button onClick={() => dispatch(logout())}>Đăng xuất</button>
+        </div>
+      ) : (
+        <div>
+          <button onClick={handleLogin}>Đăng nhập</button>
+        </div>
+      )}
     </div>
   );
 }
