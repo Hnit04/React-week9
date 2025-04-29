@@ -6,6 +6,7 @@ import { toggleTheme } from './store/slices/themeSlice';
 import { addItem, removeItem, updateQuantity } from './store/slices/cartSlice';
 import { login, logout } from './store/slices/authSlice';
 import { fetchUsers } from './store/slices/userSlice';
+import { updateInput, calculateResult } from './store/slices/bmiSlice';
 
 function App() {
   const count = useSelector((state) => state.counter.count);
@@ -14,6 +15,7 @@ function App() {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const { user, isLoggedIn } = useSelector((state) => state.auth);
   const { users, status, error } = useSelector((state) => state.users);
+  const { height, weight, result } = useSelector((state) => state.bmi);
   const dispatch = useDispatch();
   const [text, setText] = useState('');
   const [amount, setAmount] = useState(0);
@@ -37,7 +39,7 @@ function App() {
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleLogin = () => {
-    dispatch(login({ name: 'Trần Công TínhTính', email: 'trancongtinh20042004@gmail.com' }));
+    dispatch(login({ name: 'Trần Công Tính', email: 'trancongtinh20042004@gmail.com' }));
   };
 
   return (
@@ -124,6 +126,30 @@ function App() {
           <li key={user.id}>{user.name} - {user.email}</li>
         ))}
       </ul>
+
+      <h1>Tính BMI</h1>
+      <div>
+        <label>Chiều cao (cm): </label>
+        <input
+          type="number"
+          value={height || ''}
+          onChange={(e) =>
+            dispatch(updateInput({ field: 'height', value: +e.target.value }))
+          }
+        />
+      </div>
+      <div>
+        <label>Cân nặng (kg): </label>
+        <input
+          type="number"
+          value={weight || ''}
+          onChange={(e) =>
+            dispatch(updateInput({ field: 'weight', value: +e.target.value }))
+          }
+        />
+      </div>
+      <button onClick={() => dispatch(calculateResult())}>Tính</button>
+      {result && <p>BMI: {result.toFixed(2)}</p>}
     </div>
   );
 }
